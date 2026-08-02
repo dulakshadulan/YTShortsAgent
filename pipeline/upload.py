@@ -49,10 +49,12 @@ def upload_short(video_path: str, title: str, description: str = "", tags=None,c
             "description": description,
             "tags": tags or [],
             "categoryId": category, 
+            
         },
         "status": {
             "privacyStatus": "public",
             "selfDeclaredMadeForKids": False,
+            "containsSyntheticMedia": False,
         },
     }
 

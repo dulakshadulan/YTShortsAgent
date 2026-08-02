@@ -40,7 +40,9 @@ def run(reel_url: str ):
     dims = data['dims']
     meta = data['meta']
     print(data)
-    meta['hashtags'] = meta['hashtags'] + [ 'funnyvideos', 'memepage', 'memecontent', 'internethumor','memes', 'funny', 'dankmemes', 'viral', 'fyp', 'foryou', 'foryoupage', 'viralvideo', 'relatable', 'comedy', 'funnyclip', 'lol', 'dailyhumor', 'internetmemes', 'usa', 'usashorts' ,'trending', 'explorepage', 'recommended', 'youtubeshorts', 'shorts', 'shortsvideo', 'shortsfeed', 'shortsviral']
+    meta['hashtags'] = meta['hashtags'] + [ 'funnyvideos', 'memepage', 'memecontent', 'internethumor','memes', 'funny', 'dankness', 'viral', 'fyp', 'foryou', 'foryoupage', 'viralvideo', 'relatable', 'comedy', 'funnyclip', 'lol', 'dailyhumor', 'internetmemes', 'usa', 'usashorts' ,'trending', 'explorepage', 'recommended', 'youtubeshorts', 'shorts', 'shortsvideo', 'shortsfeed', 'shortsviral']
+
+    tags = ' '.join('#' + i for i in meta['hashtags'])
 
     print("\n=== Step 3/4: Creating frame and cropping the video")
     CROPPED_VID = crop_video(PATH, dims['crop'], VID_OUT)
@@ -50,7 +52,7 @@ def run(reel_url: str ):
 
     print("\n=== Step 4/4: Uploading to YouTube Shorts ===")
 
-    video_id = upload_short(FINAL_VIDEO, meta['title'], meta['description'], meta['hashtags'],meta['category'] )
+    video_id = upload_short(FINAL_VIDEO, meta['title'], meta['description'] + '\n'+ tags , meta['hashtags'],meta['category'] )
 
     os.remove(VID_OUT)
     os.remove(FRAME_OUT)
@@ -71,4 +73,6 @@ if __name__ == "__main__":
             sys.exit(1)
         url = sys.argv[1]
         run(url)
+
+        
     

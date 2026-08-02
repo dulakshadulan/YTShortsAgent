@@ -2,20 +2,20 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 
 TITLE_BOX_X = 130
-TITLE_BOX_Y = 580
+TITLE_BOX_Y = 590
 
 TITLE_BOX_W = 1467   
 TITLE_BOX_H = 200
 
-FONT_SIZE = 100
+FONT_SIZE = 105
 FONT_COLOR = (20, 20, 20) 
 
 
 FONT_CANDIDATES = [
-    "georgia.ttf",
-    "times.ttf",
-    "C:/Windows/Fonts/georgia.ttf",
-    "C:/Windows/Fonts/times.ttf",
+    "georgiab.ttf",
+    "timesb.ttf",
+    "C:/Windows/Fonts/georgiab.ttf",
+    "C:/Windows/Fonts/timesb.ttf",
 ]
 
 
@@ -80,3 +80,5 @@ if __name__ == "__main__":
 
     result = add_title(sys.argv[1], sys.argv[2], sys.argv[3])
     print(f"Saved: {result}")
+
+

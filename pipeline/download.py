@@ -1,8 +1,3 @@
-"""
-download.py
-Downloads an Instagram Reel / Facebook Reel as an mp4 using yt-dlp.
-"""
-
 import subprocess
 import uuid
 import os
@@ -57,6 +52,7 @@ def download_reel(url: str, cookies_file: str | None = None) -> dict:
         "description": caption,
         "uploader": uploader,
         "tags": tags,
+        "json_path" : info_json_path,
     }
 
 
@@ -65,6 +61,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python download.py <reel_url> [cookies_file]")
         sys.exit(1)
+        
     url = sys.argv[1]
     cookies = sys.argv[2] if len(sys.argv) > 2 else None
     result = download_reel(url, cookies)
@@ -72,3 +69,7 @@ if __name__ == "__main__":
     print(f"Original caption: {result['description']}")
     print(f"Uploader: {result['uploader']}")
     print(f"Tags found: {result['tags']}")
+    print(f"Json path: {result['json_path']}")
+
+
+

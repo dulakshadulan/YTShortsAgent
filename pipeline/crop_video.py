@@ -1,6 +1,5 @@
 import subprocess
 import json
-import os
 
 
 def get_video_dimensions(video_path: str) -> tuple[int, int]:
@@ -21,10 +20,7 @@ def get_video_dimensions(video_path: str) -> tuple[int, int]:
 
 
 def crop_video(video_path: str, crop_fractions: dict, output_path: str) -> str:
-    """
-    crop_fractions: {"top": 0.05, "bottom": 0.05, "left": 0.0, "right": 0.0}
-    Values are fractions (0.0-1.0) of the frame to cut from each edge.
-    """
+
     width, height = get_video_dimensions(video_path)
 
     top = crop_fractions.get("top", 0.0)
@@ -72,3 +68,4 @@ if __name__ == "__main__":
     }
     result = crop_video(video_path, fractions, output_path)
     print(f"Cropped video saved: {result}")
+    

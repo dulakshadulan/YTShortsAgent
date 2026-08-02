@@ -36,9 +36,10 @@ Write YouTube Shorts copy based on what's actually happening in the video
 (use the original caption for extra context, but don't just copy it verbatim).
 Write copy that would make someone stop scrolling — natural, human, joyful tone,
 not robotic, not generic, no overused phrases like "you won't believe what happens" and no emojy.
-title should be short and be like a some kind of quote that makes interest to watch you can give little long titles when needed. .
-Few examples - Its the look on his face , dad joke award for today goes to , Okay : you can go now, technologia , His first betrayal , like some playful words like you are experiencing the event.
-Can be few or multiple words .Its ok to use sarcasm, irony but not all the time use where it makes sense.
+title should be like a some kind of quote that makes interest to watch you can give little long titles when needed. .
+Few examples - Its the look on his face , dad joke award for today goes to , Okay : you can go now,  His first betrayal , like some playful words like you are experiencing the event.
+.Its ok to use sarcasm, irony but not all the time use where it makes sense.
+Use humour in the title.
 Also give the hashtages that will help the short to go viral . Use internet to find best metadata.
 end the title with a "." .
 
@@ -188,6 +189,8 @@ if __name__ == "__main__":
     vid_path = sys.argv[1]
     data = get_meta_data(vid_path, caption)
     print(data)
+
+    
 
 
 
