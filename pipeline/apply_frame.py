@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-# Coordinates measured from the Daily Highlights frame (1701x3024).
+# Frame dims =  (1701x3024).
 
 BOX_X = 60
 BOX_Y = 800

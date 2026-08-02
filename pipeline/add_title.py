@@ -1,8 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
 
-# Title text box coordinates, measured from the frame template (1701x3024).
-
 TITLE_BOX_X = 130
 TITLE_BOX_Y = 580
 
@@ -54,7 +52,6 @@ def add_title(frame_path: str, title_text: str, output_path: str) -> str:
     font = _load_font(FONT_SIZE)
     lines = _wrap_text(title_text, font, TITLE_BOX_W, draw)
 
-    # Shrink font if too many lines to fit the box height
     line_height = FONT_SIZE * 1.2
     while len(lines) * line_height > TITLE_BOX_H and font.size > 30:
         font = _load_font(font.size - 5)

@@ -1,12 +1,5 @@
-"""
-upload.py
-Uploads a finished video to YouTube as a Short.
-
-First run: opens a browser window for you to log in and authorize.
-After that, a token.json is saved locally so future runs are automatic.
-"""
-
 import os
+from pathlib import Path
 import google_auth_oauthlib.flow
 import googleapiclient.discovery
 import googleapiclient.errors
@@ -15,8 +8,14 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
-CLIENT_SECRETS_FILE = "client_secret.json"
-TOKEN_FILE = "token.json"
+
+CONFIG_DIR = Path("./.config")
+
+CLIENT_SECRET_FILE = CONFIG_DIR / "client_secret.json"
+TOKEN_FILE = CONFIG_DIR / "token.json"
+
+# CLIENT_SECRETS_FILE = "client_secret.json"
+# TOKEN_FILE = "token.json"
 
 
 def get_authenticated_service():

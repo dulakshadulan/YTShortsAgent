@@ -1,6 +1,7 @@
 import argparse
 import os
 import uuid
+from pathlib import Path
 
 from pipeline.download import download_reel
 from pipeline.generate_metadata import get_meta_data
@@ -9,8 +10,10 @@ from pipeline.apply_frame import apply_frame
 from pipeline.upload import upload_short
 from pipeline.add_title import add_title
 
+CONFIG_DIR = Path("./.config")
+
 OUTPUT_DIR = "final_outputs"
-COOKIES = "cookies.txt"
+COOKIES = CONFIG_DIR / "cookies.txt"
 VID_OUT = r".\outputs\output.mp4"
 FRAME_OUT = r".\outputs\titled_frame.png"
 FRAME_PATH = r".\src\frame.png"
@@ -37,6 +40,7 @@ def run(reel_url: str ):
     dims = data['dims']
     meta = data['meta']
     print(data)
+    meta['hashtags'] = meta['hashtags'] + [ 'funnyvideos', 'memepage', 'memecontent', 'internethumor','memes', 'funny', 'dankmemes', 'viral', 'fyp', 'foryou', 'foryoupage', 'viralvideo', 'relatable', 'comedy', 'funnyclip', 'lol', 'dailyhumor', 'internetmemes', 'usa', 'usashorts' ,'trending', 'explorepage', 'recommended', 'youtubeshorts', 'shorts', 'shortsvideo', 'shortsfeed', 'shortsviral']
 
     print("\n=== Step 3/4: Creating frame and cropping the video")
     CROPPED_VID = crop_video(PATH, dims['crop'], VID_OUT)
@@ -54,7 +58,7 @@ def run(reel_url: str ):
     os.remove("middle_frame.png")
     os.remove(PATH)
     os.remove(JSON_PATH)
-    
+
     print("\n=== DONE ===")
 
     print(f"https://youtube.com/shorts/{video_id}")
