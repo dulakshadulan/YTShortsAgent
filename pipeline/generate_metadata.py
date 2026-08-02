@@ -30,21 +30,27 @@ Here is the ORIGINAL caption/hashtags from the source post (may be empty or mess
 ---
 {original_caption}
 ---
+get the details can ideas you can get from it(if it had totally unrelated thing like (V stepped in to the crowd...) ignore it completely)
 
 Write YouTube Shorts copy based on what's actually happening in the video
 (use the original caption for extra context, but don't just copy it verbatim).
 Write copy that would make someone stop scrolling — natural, human, joyful tone,
 not robotic, not generic, no overused phrases like "you won't believe what happens" and no emojy.
-title should be short and be like a some kind of quote that makes interest to watch.
+title should be short and be like a some kind of quote that makes interest to watch you can give little long titles when needed. .
 Few examples - Its the look on his face , dad joke award for today goes to , Okay : you can go now, technologia , His first betrayal , like some playful words like you are experiencing the event.
-Can be one or multiple words.Its ok to use sarcasm, irony but not all the time use where it makes sense.
+Can be few or multiple words .Its ok to use sarcasm, irony but not all the time use where it makes sense.
 Also give the hashtages that will help the short to go viral . Use internet to find best metadata.
+end the title with a "." .
+
+Also the category number for youtube upload . Choose between  People & Blogs - (ID 22) , Comedy (ID 23) , Entertainment (ID 24) , Pets & Animals (ID 15)
+Use Pets & Animals if the pet is the main star. Use People & Blogs for family-focused "wholesome baby moments" or daily vlogs . Use Comedy if the main goal is a quick laugh. Use Entertainment otherwise.
 
 Return ONLY a JSON object (no markdown, no code fences, no extra text):
 {{
   "title": "under 40 characters, catchy, specific to this content, joyful tone",
   "description": "2-4 sentences, natural human tone, not a dry summary",
-  "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+  "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
+  "category": 22
 }}
 
 Hashtags: lowercase, no # symbol, relevant to actual content, include "shorts" as one.
@@ -58,12 +64,12 @@ for YouTube Shorts).
 Check if this frame has a baked-in border/frame/Caption-bar around the
 actual footage. If so, we need to crop it out. The frame border can be white / black any color around the content. 
 Try to find the exact point where need to crop the borders.
+DO not leave any borders(white , black any) on any side . specially right and left . also specially top and bottom. 
 
 
 IMPORTANT: Check EACH edge (top, bottom, left, right) INDEPENDENTLY. Do NOT assume
 they are symmetric. A bar at the top does NOT mean there's a matching bar at the
-bottom — many frames only have something on ONE edge, or two adjacent edges, not
-all four. Look at each edge separately.
+bottom. Look at each edge separately and give each side dimension. 
 
 Return ONLY a JSON object (no markdown, no code fences, no extra text):
 {
@@ -95,10 +101,7 @@ def get_video_duration(video_path: str) -> float:
 
 
 def extract_middle_frame(video_path: str, output_path: str = "middle_frame.png") -> str:
-    """
-    Grabs a single frame from the exact middle of the video.
-    Used for crop/border detection, which doesn't need the full video.
-    """
+
     duration = get_video_duration(video_path)
     midpoint = duration / 2
 
@@ -117,12 +120,7 @@ def extract_middle_frame(video_path: str, output_path: str = "middle_frame.png")
     return output_path
 
 def detect_crop(frame_path: str) -> dict:
-    """
-    Sends a single frame (not the full video) to Gemini to detect any
-    baked-in border/watermark/caption bar that needs cropping.
-    Much cheaper and just as accurate as using the full video for this,
-    since the border position doesn't change across frames.
-    """
+
     from PIL import Image
 
     img = Image.open(frame_path)
@@ -142,11 +140,7 @@ def detect_crop(frame_path: str) -> dict:
 
 
 def analyze_video(video_path: str, original_caption: str = "") -> dict:
-    """
-    Uploads video_path to Gemini and returns a dict with:
-      title, description, hashtags, needCrop, crop (top/bottom/left/right fractions)
-    based on both the video content AND the original source caption.
-    """
+
     print("Uploading video to Gemini...")
     uploaded_file = client.files.upload(file=video_path)
 
@@ -175,6 +169,14 @@ def analyze_video(video_path: str, original_caption: str = "") -> dict:
 
     return data
 
+def get_meta_data(video_path:str , caption : str = ""):
+    frame_path = extract_middle_frame(video_path ,  "middle_frame.png"  )
+    dims = detect_crop(frame_path)
+    result = analyze_video(video_path,caption)
+    data = {"dims" : dims , "meta" : result }
+    return data
+
+
 
 if __name__ == "__main__":
     import sys
@@ -183,8 +185,10 @@ if __name__ == "__main__":
         sys.exit(1)
 
     caption = sys.argv[2] if len(sys.argv) > 2 else ""
-    result = analyze_video(sys.argv[1], caption)
-    frame_path = extract_middle_frame(sys.argv[1], "check_frame.png")
-    dims = detect_crop(frame_path)
-    print(json.dumps(result, indent=2))
-    print(dims)
+    vid_path = sys.argv[1]
+    data = get_meta_data(vid_path, caption)
+    print(data)
+
+
+
+

@@ -1,57 +1,51 @@
-"""
-main.py
-Full pipeline: reel URL -> downloaded -> AI-described -> AI-written copy ->
-framed into your channel template -> uploaded to YouTube Shorts.
-
-Usage:
-    python main.py "https://www.instagram.com/reel/xxxx/" [--frame frame.jpg] [--privacy public]
-"""
-
 import argparse
 import os
 import uuid
 
 from pipeline.download import download_reel
-from pipeline.generate_metadata import describe_video
-from pipeline.write_copy import write_copy
+from pipeline.generate_metadata import get_meta_data
+from pipeline.crop_video import crop_video
 from pipeline.apply_frame import apply_frame
 from pipeline.upload import upload_short
+from pipeline.add_title import add_title
 
 OUTPUT_DIR = "final_outputs"
+COOKIES = "cookies.txt"
+VID_OUT = r".\outputs\output.mp4"
+FRAME_OUT = r".\outputs\titled_frame.png"
+FRAME_PATH = r".\src\frame.png"
+FINAL_OUT = r".\outputs\final.mp4"
 
 
-def run(reel_url: str, frame_path: str, privacy_status: str = "public", cookies_file: str | None = None):
+def run(reel_url: str ):
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    print("\n=== Step 1/5: Downloading reel ===")
-    reel = download_reel(reel_url, cookies_file)
-    print(f"Downloaded: {reel['video_path']}")
-    print(f"Original caption: {reel['description'][:100]}...")
+    print("\n=== Step 1/4: Downloading reel ===")
+    reel = download_reel(reel_url, COOKIES)
+    PATH = reel['video_path']
+    org_caption = reel['description']
 
-    print("\n=== Step 2/5: Describing video with Gemini ===")
-    video_description = describe_video(reel["video_path"])
-    print(f"Description: {video_description[:150]}...")
+    print(f"Downloaded: " , PATH)
+    print(f"Original caption: {org_caption[:100]}...")
 
-    print("\n=== Step 3/5: Writing title/description/hashtags with OpenAI ===")
-    copy = write_copy(video_description, reel["description"])
-    print(f"Title: {copy['title']}")
-    print(f"Hashtags: {copy['hashtags']}")
+    print("\n=== Step 2/4: Getting metadata from Gemini ===")
 
-    print("\n=== Step 4/5: Compositing into channel frame ===")
-    output_id = str(uuid.uuid4())[:8]
-    final_video_path = os.path.join(OUTPUT_DIR, f"{output_id}.mp4")
-    apply_frame(reel["video_path"], frame_path, final_video_path)
-    print(f"Framed video saved: {final_video_path}")
+    # data = {'dims': {'needCrop': True, 'crop': {'top': 0.266, 'bottom': 0.162, 'left': 0.0, 'right': 0.0}}, 'meta': {'title': 'Smells like victory.', 'description': "When hundreds of trailers unexpectedly parked on his ready-to-harvest field, this French farmer decided not to wait around for help. He hooked up his manure tanker and gave the uninvited guests a smell they won't soon forget. Turns out nothing clears a campsite faster than fresh liquid fertilizer!", 'hashtags': ['shorts', 'farmer', 'karma', 'funny', 'revenge'], 'category': 23}}
 
-    # print("\n=== Step 5/5: Uploading to YouTube Shorts ===")
-    # video_id = upload_short(
-    #     video_path=final_video_path,
-    #     title=copy["title"],
-    #     description=copy["description"],
-    #     tags=copy["hashtags"],
-    #     privacy_status=privacy_status,
-    #     made_for_kids=False,
-    # )
+    data = get_meta_data(PATH,org_caption)
+    dims = data['dims']
+    meta = data['meta']
+    print(data)
+
+    print("\n=== Step 3/4: Creating frame and cropping the video")
+    CROPPED_VID = crop_video(PATH, dims['crop'], VID_OUT)
+    TITLED_FRAME = add_title(FRAME_PATH, meta['title'], FRAME_OUT)
+    FINAL_VIDEO = apply_frame(CROPPED_VID, TITLED_FRAME, FINAL_OUT)
+
+
+    # print("\n=== Step 4/4: Uploading to YouTube Shorts ===")
+
+    # video_id = upload_short(FINAL_VIDEO, meta['title'], meta['description'], meta['hashtags'],meta['category'] )
 
     # print("\n=== DONE ===")
     # print(f"https://youtube.com/shorts/{video_id}")
@@ -59,11 +53,10 @@ def run(reel_url: str, frame_path: str, privacy_status: str = "public", cookies_
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Reel -> YouTube Shorts pipeline")
-    parser.add_argument("url", help="Instagram or Facebook reel URL")
-    parser.add_argument("--frame", default="frame.jpg", help="Path to your channel frame template image")
-    parser.add_argument("--privacy", default="public", choices=["public", "unlisted", "private"])
-    parser.add_argument("--cookies", default=None, help="Path to cookies.txt if needed for IG auth")
-    args = parser.parse_args()
-
-    run(args.url, args.frame, args.privacy, args.cookies)
+        import sys
+        if len(sys.argv) < 2:
+            print("Usage: python crop_video.py <video_path> <output_path> [top] [bottom] [left] [right]")
+            sys.exit(1)
+        url = sys.argv[1]
+        run(url)
+    

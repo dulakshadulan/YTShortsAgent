@@ -40,12 +40,8 @@ def get_authenticated_service():
     return googleapiclient.discovery.build("youtube", "v3", credentials=creds)
 
 
-def upload_short(video_path: str, title: str, description: str = "", tags=None):
-    """
-    Uploads video_path to YouTube as a public video.
-    Keep the video vertical (9:16) and under 60s for it to be
-    treated as a Short automatically.
-    """
+def upload_short(video_path: str, title: str, description: str = "", tags=None,category:int = 22 ):
+
     youtube = get_authenticated_service()
 
     body = {
@@ -53,7 +49,7 @@ def upload_short(video_path: str, title: str, description: str = "", tags=None):
             "title": title,
             "description": description,
             "tags": tags or [],
-            "categoryId": "22",  # People & Blogs; change if needed
+            "categoryId": category, 
         },
         "status": {
             "privacyStatus": "public",
