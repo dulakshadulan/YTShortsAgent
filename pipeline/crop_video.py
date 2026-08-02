@@ -1,10 +1,3 @@
-"""
-crop_video.py
-Crops a baked-in frame/border/watermark off a video, using fractional
-boundaries (0.0-1.0) from each edge. Converts fractions to exact pixels
-via ffprobe so we never trust an AI's pixel guess directly.
-"""
-
 import subprocess
 import json
 import os

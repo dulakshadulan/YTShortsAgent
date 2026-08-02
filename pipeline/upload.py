@@ -11,7 +11,7 @@ SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
 
 CONFIG_DIR = Path("./.config")
 
-CLIENT_SECRET_FILE = CONFIG_DIR / "client_secret.json"
+CLIENT_SECRETS_FILE = CONFIG_DIR / "client_secret.json"
 TOKEN_FILE = CONFIG_DIR / "token.json"
 
 # CLIENT_SECRETS_FILE = "client_secret.json"
