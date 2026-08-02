@@ -23,6 +23,7 @@ def run(reel_url: str ):
     print("\n=== Step 1/4: Downloading reel ===")
     reel = download_reel(reel_url, COOKIES)
     PATH = reel['video_path']
+    JSON_PATH = reel['json_path']
     org_caption = reel['description']
 
     print(f"Downloaded: " , PATH)
@@ -43,13 +44,20 @@ def run(reel_url: str ):
     FINAL_VIDEO = apply_frame(CROPPED_VID, TITLED_FRAME, FINAL_OUT)
 
 
-    # print("\n=== Step 4/4: Uploading to YouTube Shorts ===")
+    print("\n=== Step 4/4: Uploading to YouTube Shorts ===")
 
-    # video_id = upload_short(FINAL_VIDEO, meta['title'], meta['description'], meta['hashtags'],meta['category'] )
+    video_id = upload_short(FINAL_VIDEO, meta['title'], meta['description'], meta['hashtags'],meta['category'] )
 
-    # print("\n=== DONE ===")
-    # print(f"https://youtube.com/shorts/{video_id}")
-    # return video_id
+    os.remove(VID_OUT)
+    os.remove(FRAME_OUT)
+    os.remove(FINAL_OUT)
+    os.remove("middle_frame.png")
+    os.remove(PATH)
+    os.remove(JSON_PATH)
+    
+    print("\n=== DONE ===")
+
+    print(f"https://youtube.com/shorts/{video_id}")
 
 
 if __name__ == "__main__":

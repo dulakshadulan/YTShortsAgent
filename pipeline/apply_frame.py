@@ -1,41 +1,18 @@
-"""
-apply_frame.py
-Overlays a downloaded reel video into a static frame template
-(channel header stays fixed, video fills the placeholder box).
-
-Uses a scale-to-fit + pad approach (no cropping) so vertical, horizontal,
-or square videos all fit fully inside the box, centered, with no content
-cut off. Padding color matches the frame's background so it blends in.
-"""
-
 import subprocess
 import os
 
 # Coordinates measured from the Daily Highlights frame (1701x3024).
-# If you switch to a differently-sized/laid-out frame, re-measure these.
+
 BOX_X = 60
 BOX_Y = 800
 BOX_W = 1580
 BOX_H = 2180
 
-# Matches the frame's background color so letterboxing blends in seamlessly.
 PAD_COLOR = "0xF2F0EF"
 
 
 def apply_frame(video_path: str, frame_path: str, output_path: str) -> str:
-    """
-    Composites `video_path` into the placeholder area of `frame_path`.
-    The video is scaled to fit fully inside the box (no cropping), then
-    centered, with any leftover space padded in the frame's background color.
 
-    Args:
-        video_path: path to the downloaded reel mp4.
-        frame_path: path to the static frame template image (png/jpg).
-        output_path: where to save the final composited mp4.
-
-    Returns:
-        output_path
-    """
     if not os.path.exists(video_path):
         raise FileNotFoundError(video_path)
     if not os.path.exists(frame_path):
