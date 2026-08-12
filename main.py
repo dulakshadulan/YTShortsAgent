@@ -64,6 +64,7 @@ def run(reel_url: str ):
     print("\n=== DONE ===")
 
     print(f"https://youtube.com/shorts/{video_id}")
+    return video_id
 
 
 if __name__ == "__main__":
